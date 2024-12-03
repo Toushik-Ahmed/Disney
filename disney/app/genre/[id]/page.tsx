@@ -1,28 +1,38 @@
+'use client';
 import MoviesCarousel from '@/components/MoviesCarousel';
 import { getDiscoverMovies } from '@/lib/getMovies';
+import { Movie } from '@/typings';
 import { useParams, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-type Props={
-  params: {
-    id: string;
-  };
-  searchParams: {
-    genre: string;
-  }
-}
+function GenrePage() {
+  const params = useParams();
+  console.log(params);
+  const id = Array.isArray(params.id) ? params.id[0] : params.id; // Ensure id is a string
+  const searchParams = useSearchParams();
+  const search = searchParams.get('genre');
+  console.log(id, search);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
-async function GenrePage({params:{id},searchParams:{genre}}:Props) {
-  // const params = useParams();
-  // const searchParams = useSearchParams();
-  // const id = params.id as string;
-  // const genre = searchParams.get('genre');
-
-  const movies = await getDiscoverMovies(id);
+  useEffect(() => {
+    console.log('useEffect called');
+    const res = async () => {
+      console.log('res called');
+      try {
+        const movies = await getDiscoverMovies(id);
+        console.log(movies);
+        setMovies(movies);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    res();
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col space-y-4 mt-32 xl:-mt-42">
-        <h1 className="text-6xl font-bold px-10">Results for {genre}</h1>
+        <h1 className="text-6xl font-bold px-10">Results for {search}</h1>
       </div>
       <MoviesCarousel title="Genre" movies={movies} isVertical />
     </div>

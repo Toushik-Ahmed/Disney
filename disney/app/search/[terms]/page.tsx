@@ -1,27 +1,33 @@
+'use client';
 import MoviesCarousel from '@/components/MoviesCarousel';
 import { getPopularMovies, getSearchedMovies } from '@/lib/getMovies';
-import { notFound } from 'next/navigation';
+import { Movie } from '@/typings';
+import { notFound, useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-type Props = {
-  params: {
-    terms: string;
-  };
-};
+function SearchPage() {
+  const { terms } = useParams();
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
 
-async function SearchPage({ params }: Props) {
-  const { terms } = await params; // Destructure after ensuring params is resolved
   if (!terms) notFound();
-  const termToUse = decodeURI(terms);
+  const termToUse = decodeURI(terms as string);
 
-  const movies = await getSearchedMovies(termToUse);
+  useEffect(() => {
+    const res = async () => {
+      const movie = await getSearchedMovies(termToUse);
+      const popularMovie = await getPopularMovies();
+      setMovies(movie);
+      setPopularMovies(popularMovie);
+    };
+    res();
+  }, [terms]);
 
-  const popularMovies = await getPopularMovies();
-  console.log(terms);
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col space-y-4 mt-32 xl:-mt-42">
         <h1 className="text-6xl font-bold px-10">Results for {termToUse}</h1>
-        <MoviesCarousel title='Movies' movies={movies} isVertical={true} />
+        <MoviesCarousel title="Movies" movies={movies} isVertical={true} />
         <MoviesCarousel movies={popularMovies} title="popular" />
       </div>
     </div>

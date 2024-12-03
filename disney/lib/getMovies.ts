@@ -11,7 +11,7 @@ async function fetchFromTMDB(url: URL, cacheTime?: number) {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
     },
     next: {
       revalidate: cacheTime || 60 * 60 * 24,
@@ -50,12 +50,7 @@ export async function getDiscoverMovies(id?: string, keywords?: string) {
 export async function getSearchedMovies(term: string) {
   const url = new URL(`https://api.themoviedb.org/3/search/movie`);
   url.searchParams.set('query', term);
-  // url.searchParams.set('include_adult', 'false');
-  // url.searchParams.set('language', 'en-US');
-  // url.searchParams.set('page', '1');
 
   const data = await fetchFromTMDB(url);
   return data.results;
 }
-
-

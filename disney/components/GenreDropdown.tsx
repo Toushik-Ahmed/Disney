@@ -18,7 +18,7 @@ async function GenreDropdown() {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
     },
     next: {
       revalidate: 60 * 60 * 24,
@@ -27,7 +27,7 @@ async function GenreDropdown() {
 
   const res = await fetch(url, options);
   const data: Genres = await res.json();
-  console.log(data);
+
 
   return (
     <DropdownMenu>
