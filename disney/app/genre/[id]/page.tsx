@@ -7,20 +7,18 @@ import { useEffect, useState } from 'react';
 
 function GenrePage() {
   const params = useParams();
-  console.log(params);
-  const id = Array.isArray(params.id) ? params.id[0] : params.id; // Ensure id is a string
+
+  const id = params.id;
   const searchParams = useSearchParams();
   const search = searchParams.get('genre');
-  console.log(id, search);
+
   const [movies, setMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
-    console.log('useEffect called');
     const res = async () => {
-      console.log('res called');
       try {
-        const movies = await getDiscoverMovies(id);
-        console.log(movies);
+        const movies = await getDiscoverMovies(id as string);
+
         setMovies(movies);
       } catch (error) {
         console.log(error);

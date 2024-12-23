@@ -1,5 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -19,24 +20,38 @@ function SearchInput() {
       input: '',
     },
   });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
     router.push(`/search/${values.input}`);
     form.reset();
   }
 
+  // Manually trigger search when the icon is clicked
+  function handleIconClick() {
+    const values = form.getValues();
+    if (values.input.trim().length >= 2) {
+      router.push(`/search/${values.input}`);
+      form.reset();
+    }
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="relative space-y-8">
         <FormField
           control={form.control}
           name="input"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="search..." {...field} />
+                <div className="relative">
+                  <Input placeholder="search..." {...field} />
+                  <Search
+                    className="absolute right-3 top-3 h-4 w-4 cursor-pointer text-gray-500 hover:text-gray-700"
+                    onClick={handleIconClick}
+                  />
+                </div>
               </FormControl>
             </FormItem>
           )}
